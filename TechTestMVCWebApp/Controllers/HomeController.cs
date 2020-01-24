@@ -14,6 +14,7 @@ namespace TechTestMVCWebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private IScraper duckDuckGoScraper = new DuckDuckGoScraper();
+        private IScraper bingScraper = new BingScraper();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -27,9 +28,10 @@ namespace TechTestMVCWebApp.Controllers
 
         public IActionResult Search(string search)
         {
-            var results = duckDuckGoScraper.Scrape(search);
+            var duckResults = duckDuckGoScraper.Scrape(search);
+            var bingResults = bingScraper.Scrape(search);
             ViewBag.SearchTerm = search;
-            return View(results);
+            return View(bingResults);
         }
 
         public IActionResult Privacy()

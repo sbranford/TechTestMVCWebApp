@@ -3,32 +3,28 @@ using MVCWebAppTests.Scraper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using TechTestMVCWebApp.Models;
 
 namespace TechTestMVCWebApp.Scraper
 {
-    public class DuckDuckGoScraper : AbstractScraper
+    public class BingScraper : AbstractScraper
     {
-        private static readonly string resultGroupNodeClassName = "results";
-        private static readonly string resultGroupNodeId = "links";
-        private static readonly string resultNodeClassName = "links_main links_deep result__body";
-        private static readonly string resultSnippetClassName = "result__snippet";
+        private static readonly string resultGroupNodeId = "b_results";
+        private static readonly string resultNodeClassName = "b_algo";
+        private static readonly string resultSnippetClassName = "b_caption";
         private static readonly string resultUrlParamterName = "amp;uddg";
-
-        public DuckDuckGoScraper()
+        public BingScraper ()
         {
-            siteUrl = "https://duckduckgo.com/html/";
+            siteUrl = "https://www.bing.com/search";
         }
-
         protected override IEnumerable<HtmlNode> GetResultNodes(HtmlDocument doc)
         {
             var rootNode = doc.DocumentNode;
             var bodyNode = rootNode.Descendants("body").FirstOrDefault();
-            var resultGroupNode = bodyNode?.Descendants("div")
-                .Where(x => x.Attributes["id"]?.Value == resultGroupNodeId && x.Attributes["class"]?.Value == resultGroupNodeClassName)
+            var resultGroupNode = bodyNode?.Descendants("ol")
+                .Where(x => x.Attributes["id"]?.Value == resultGroupNodeId)
                 .FirstOrDefault();
 
             if (resultGroupNode == null)
@@ -36,13 +32,16 @@ namespace TechTestMVCWebApp.Scraper
                 throw new ScraperPageFormatException();
             }
 
-            var resultNodes = resultGroupNode.Descendants("div").Where(x => x.Attributes["class"]?.Value == resultNodeClassName);
+            var resultNodes = resultGroupNode.Descendants("li").Where(x => x.Attributes["class"]?.Value == resultNodeClassName);
             return resultNodes;
         }
 
         protected override string GetResultNodeSnippet(HtmlNode x)
         {
-            return x.Descendants("a")?.Where(y => y.Attributes["class"]?.Value == resultSnippetClassName)?.FirstOrDefault()?.InnerText;
+            var snippet = x.Descendants("div")
+                ?.Where(y => y.Attributes["class"]?.Value == resultSnippetClassName)?.FirstOrDefault()
+                ?.Descendants("p")?.FirstOrDefault()?.InnerText;
+            return snippet;
         }
 
         protected override string GetResultNodeLink(HtmlNode x)

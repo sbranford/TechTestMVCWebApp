@@ -31,7 +31,7 @@ namespace TechTestMVCWebApp.Scraper
         }
         private string BuildQueryUrl(string searchTerm)
         {
-            string query = siteUrl + "/?q=" + searchTerm;
+            string query = siteUrl + "?q=" + searchTerm;
             return query;
         }
 
@@ -42,7 +42,21 @@ namespace TechTestMVCWebApp.Scraper
             return results;
         }
 
+        private List<SearchResult> ParseResultNodes(IEnumerable<HtmlNode> resultNodes)
+        {
+            var results = resultNodes.Select(x => new SearchResult()
+            {
+                Title = GetResultNodeTitle(x),
+                Link = GetResultNodeLink(x),
+                Summary = GetResultNodeSnippet(x)
+            }).ToList();
+            return results;
+        }
+
         protected abstract IEnumerable<HtmlNode> GetResultNodes(HtmlDocument doc);
-        protected abstract List<SearchResult> ParseResultNodes(IEnumerable<HtmlNode> resultNodes);
+        protected abstract string GetResultNodeTitle(HtmlNode resultNode);
+        protected abstract string GetResultNodeLink(HtmlNode resultNode);
+        protected abstract string GetResultNodeSnippet(HtmlNode resultNode);
+
     }
 }
