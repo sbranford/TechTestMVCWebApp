@@ -10,48 +10,20 @@ using TechTestMVCWebApp.Models;
 
 namespace TechTestMVCWebApp.Scraper
 {
-    public class DuckDuckGoScraper : IScraper
+    public class DuckDuckGoScraper : AbstractScraper
     {
-        private List<SearchResult> results;
-        private static readonly string siteUrl = "https://duckduckgo.com/html";
-
         private static readonly string resultGroupNodeClassName = "results";
         private static readonly string resultGroupNodeId = "links";
         private static readonly string resultNodeClassName = "links_main links_deep result__body";
         private static readonly string resultSnippetClassName = "result__snippet";
         private static readonly string resultUrlParamterName = "amp;uddg";
 
-        public List<SearchResult> More()
+        public DuckDuckGoScraper()
         {
-            throw new NotImplementedException();
+            siteUrl = "https://duckduckgo.com/html";
         }
 
-        public List<SearchResult> Scrape(string searchTerm)
-        {
-            results = new List<SearchResult>();
-            if (string.IsNullOrEmpty(searchTerm))
-            {
-                return results;
-            }
-            var web = new HtmlWeb();
-            string queryUrl = BuildQueryUrl(searchTerm);
-            var doc = web.Load(queryUrl);
-            results = GetResults(doc);
-            return results;
-        }
-        private string BuildQueryUrl(string searchTerm)
-        {
-            string query = siteUrl + "/?q=" + searchTerm;
-            return query;
-        }
-
-        private List<SearchResult> GetResults(HtmlDocument doc)
-        {
-            IEnumerable<HtmlNode> resultNodes = GetResultNodes(doc);
-            List<SearchResult> results = ParseResultNodes(resultNodes);
-            return results;
-        }
-        private IEnumerable<HtmlNode> GetResultNodes(HtmlDocument doc)
+        protected override IEnumerable<HtmlNode> GetResultNodes(HtmlDocument doc)
         {
             var rootNode = doc.DocumentNode;
             var bodyNode = rootNode.Descendants("body").FirstOrDefault();
@@ -68,7 +40,7 @@ namespace TechTestMVCWebApp.Scraper
             return resultNodes;
         }
 
-        private List<SearchResult> ParseResultNodes(IEnumerable<HtmlNode> resultNodes)
+        protected override List<SearchResult> ParseResultNodes(IEnumerable<HtmlNode> resultNodes)
         {
             var results = resultNodes.Select(x => new SearchResult()
             {

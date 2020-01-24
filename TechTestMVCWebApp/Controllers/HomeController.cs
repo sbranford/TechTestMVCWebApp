@@ -25,13 +25,11 @@ namespace TechTestMVCWebApp.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Index(string search)
+        public IActionResult Search(string search)
         {
             var results = duckDuckGoScraper.Scrape(search);
             ViewBag.SearchTerm = search;
-            return View("Results", results);
+            return View(results);
         }
 
         public IActionResult Privacy()
