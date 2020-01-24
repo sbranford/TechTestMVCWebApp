@@ -6,12 +6,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TechTestMVCWebApp.Models;
+using TechTestMVCWebApp.Scraper;
 
 namespace TechTestMVCWebApp.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private IScraper duckDuckGoScraper = new DuckDuckGoScraper();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -21,6 +23,15 @@ namespace TechTestMVCWebApp.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Index(string search)
+        {
+            var results = duckDuckGoScraper.Scrape(search);
+            ViewBag.SearchTerm = search;
+            return View("Results", results);
         }
 
         public IActionResult Privacy()

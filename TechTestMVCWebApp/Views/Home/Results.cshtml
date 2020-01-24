@@ -1,0 +1,33 @@
+﻿@model IEnumerable<TechTestMVCWebApp.Models.SearchResult>
+
+@{
+    ViewData["Title"] = "Results";
+}
+
+<div class="text-center">
+    <h1>Results</h1>
+    @await Html.PartialAsync("_SearchBox")
+</div>
+
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                DuckDuckGo
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <h4><a href="@item.Link">@item.Title</a></h4>
+                    @Html.DisplayFor(modelItem => item.Summary)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

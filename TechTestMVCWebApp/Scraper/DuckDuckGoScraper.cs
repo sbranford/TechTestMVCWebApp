@@ -39,12 +39,33 @@ namespace TechTestMVCWebApp.Scraper
             results = GetResults(doc);
             return results;
         }
+        private string BuildQueryUrl(string searchTerm)
+        {
+            string query = siteUrl + "/?q=" + searchTerm;
+            return query;
+        }
 
         private List<SearchResult> GetResults(HtmlDocument doc)
         {
             IEnumerable<HtmlNode> resultNodes = GetResultNodes(doc);
             List<SearchResult> results = ParseResultNodes(resultNodes);
             return results;
+        }
+        private IEnumerable<HtmlNode> GetResultNodes(HtmlDocument doc)
+        {
+            var rootNode = doc.DocumentNode;
+            var bodyNode = rootNode.Descendants("body").FirstOrDefault();
+            var resultGroupNode = bodyNode?.Descendants("div")
+                .Where(x => x.Attributes["id"]?.Value == resultGroupNodeId && x.Attributes["class"]?.Value == resultGroupNodeClassName)
+                .FirstOrDefault();
+
+            if (resultGroupNode == null)
+            {
+                throw new ScraperPageFormatException();
+            }
+
+            var resultNodes = resultGroupNode.Descendants("div").Where(x => x.Attributes["class"]?.Value == resultNodeClassName);
+            return resultNodes;
         }
 
         private List<SearchResult> ParseResultNodes(IEnumerable<HtmlNode> resultNodes)
@@ -76,30 +97,5 @@ namespace TechTestMVCWebApp.Scraper
         {
             return x.Descendants("h2")?.FirstOrDefault()?.Descendants("a")?.FirstOrDefault()?.InnerText;
         }
-
-        private IEnumerable<HtmlNode> GetResultNodes(HtmlDocument doc)
-        {
-            var rootNode = doc.DocumentNode;
-            var bodyNode = rootNode.Descendants("body").FirstOrDefault();
-            var resultGroupNode = bodyNode?.Descendants("div")
-                .Where(x => x.Attributes["id"]?.Value == resultGroupNodeId && x.Attributes["class"]?.Value == resultGroupNodeClassName)
-                .FirstOrDefault();
-
-            if (resultGroupNode == null)
-            {
-                throw new ScraperPageFormatException();
-            }
-
-            var resultNodes = resultGroupNode.Descendants("div").Where(x => x.Attributes["class"]?.Value == resultNodeClassName);
-            return resultNodes;
-        }
-
-        private string BuildQueryUrl(string searchTerm)
-        {
-            string query = siteUrl + "/?q=" + searchTerm;
-            return query;
-        }
-
-
     }
 }
