@@ -1,31 +1,44 @@
-﻿@model IEnumerable<TechTestMVCWebApp.Models.SearchResult>
+﻿@model TechTestMVCWebApp.Models.SearchResultComparisonModel
 
 @{
-    ViewData["Title"] = "Search";
+    ViewData["Title"] = "Search Comparison";
 }
 
+@{var minListLength = Math.Min(Model.SiteAResults.SearchResults.Count, Model.SiteBResults.SearchResults.Count); }
+
 <div class="text-center">
-    <h1>Search</h1>
+    <h1>@ViewData["Title"]</h1>
     @await Html.PartialAsync("_SearchBox")
 </div>
 
 <br />
 
+<p>Displaying @minListLength results for "@ViewBag.SearchTerm"</p>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                DuckDuckGo
+                @Model.SiteAResults.SiteName
+            </th>
+            <th>
+                @Model.SiteBResults.SiteName
             </th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @for (var i = 0; i < minListLength; i++)
         {
+            var itemA = Model.SiteAResults.SearchResults[i];
+            var itemB = Model.SiteBResults.SearchResults[i];
             <tr>
                 <td>
-                    <h4><a href="@item.Link">@item.Title</a></h4>
-                    @Html.DisplayFor(modelItem => item.Summary)
+                    <h5><a href="@itemA.Link">@itemA.Title</a></h5>
+                    @Html.DisplayFor(modelItem => itemA.Summary)
+                </td>
+                <td>
+                    <h5><a href="@itemB.Link">@itemB.Title</a></h5>
+                    @Html.DisplayFor(modelItem => itemB.Summary)
                 </td>
             </tr>
         }

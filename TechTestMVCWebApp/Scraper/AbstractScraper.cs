@@ -9,7 +9,8 @@ namespace TechTestMVCWebApp.Scraper
 {
     public abstract class AbstractScraper : IScraper
     {
-        protected List<SearchResult> results;
+        protected List<SearchResult> results;       
+        public abstract string SiteName { get; }
         public List<SearchResult> More()
         {
             throw new NotImplementedException();

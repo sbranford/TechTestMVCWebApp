@@ -13,8 +13,7 @@ namespace TechTestMVCWebApp.Scraper
     {
         private static readonly string resultGroupNodeClassName = "mb-15 reg searchCenterMiddle";
         private static readonly string resultSnippetClassName = "compText aAbs";
-        private static readonly string resultUrlParamterName = "amp;uddg";
-
+        public override string SiteName => "Yahoo";
         protected override string BuildQueryUrl(string searchTerm)
         {
             var siteUrl = "https://uk.search.yahoo.com/search";

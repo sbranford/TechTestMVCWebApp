@@ -17,6 +17,7 @@ namespace TechTestMVCWebApp.Scraper
         private static readonly string resultNodeClassName = "links_main links_deep result__body";
         private static readonly string resultSnippetClassName = "result__snippet";
         private static readonly string resultUrlParamterName = "amp;uddg";
+        public override string SiteName => "DuckDuckGo";
 
         protected override string BuildQueryUrl(string searchTerm)
         {
@@ -39,26 +40,27 @@ namespace TechTestMVCWebApp.Scraper
             }
 
             var resultNodes = resultGroupNode.Descendants("div").Where(x => x.Attributes["class"]?.Value == resultNodeClassName);
+            
             return resultNodes;
         }
 
-        protected override string GetResultNodeSnippet(HtmlNode x)
+        protected override string GetResultNodeSnippet(HtmlNode node)
         {
-            return x.Descendants("a")?.Where(y => y.Attributes["class"]?.Value == resultSnippetClassName)?.FirstOrDefault()?.InnerText;
+            return node.Descendants("a")?.Where(y => y.Attributes["class"]?.Value == resultSnippetClassName)?.FirstOrDefault()?.InnerText;
         }
 
-        protected override string GetResultNodeLink(HtmlNode x)
+        protected override string GetResultNodeLink(HtmlNode node)
         {
             return HttpUtility.ParseQueryString(
-                    x.Descendants("h2")?.FirstOrDefault()
+                    node.Descendants("h2")?.FirstOrDefault()
                     ?.Descendants("a")?.FirstOrDefault()?.Attributes["href"]?.Value
                 )
                 .Get(resultUrlParamterName);
         }
 
-        protected override string GetResultNodeTitle(HtmlNode x)
+        protected override string GetResultNodeTitle(HtmlNode node)
         {
-            return x.Descendants("h2")?.FirstOrDefault()?.Descendants("a")?.FirstOrDefault()?.InnerText;
+            return node.Descendants("h2")?.FirstOrDefault()?.Descendants("a")?.FirstOrDefault()?.InnerText;
         }
     }
 }

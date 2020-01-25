@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MVCWebAppTests.Scraper;
 using TechTestMVCWebApp.Models;
 using TechTestMVCWebApp.Scraper;
 
@@ -13,8 +14,8 @@ namespace TechTestMVCWebApp.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private IScraper duckDuckGoScraper = new DuckDuckGoScraper();
-        private IScraper yahooScraper = new YahooScraper();
+        private IScraper scraperA = new DuckDuckGoScraper();
+        private IScraper scraperB = new YahooScraper();
 
         public HomeController(ILogger<HomeController> logger)
         {
@@ -27,11 +28,34 @@ namespace TechTestMVCWebApp.Controllers
         }
 
         public IActionResult Search(string search)
-        {
-            var duckResults = duckDuckGoScraper.Scrape(search);
-            var bingResults = yahooScraper.Scrape(search);
+        {           
             ViewBag.SearchTerm = search;
-            return View(bingResults);
+            try
+            {
+                var searchResultsComparisonModel = BuildSearchResultComparison(search);
+                return View(searchResultsComparisonModel);
+            }
+            catch (ScraperPageFormatException)
+            {
+                return View("Error");
+            }
+            catch (Exception)
+            {
+                return View("Error");
+            }
+        }
+
+        private SearchResultComparisonModel BuildSearchResultComparison(string search)
+        {
+            var scraperAResults = scraperA.Scrape(search);
+            var scraperBResults = scraperB.Scrape(search);
+
+            var searchResultsComparisonModel = new SearchResultComparisonModel()
+            {
+                SiteAResults = new SiteSearchResults() { SiteName = scraperA.SiteName, SearchResults = scraperAResults },
+                SiteBResults = new SiteSearchResults() { SiteName = scraperB.SiteName, SearchResults = scraperBResults }
+            };
+            return searchResultsComparisonModel;
         }
 
         public IActionResult Privacy()

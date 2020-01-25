@@ -51,11 +51,25 @@ namespace MVCWebAppTests.Scraper
 
             //Act
             var results = scraper.Scrape(searchTerm);
-            var nullLinkResults = results.Where(x => x.Link == null).ToList();
+            var nullLinkResults = results.Where(x => string.IsNullOrEmpty(x.Link)).ToList();
 
             //Assert
-            Assert.IsEmpty(nullLinkResults);
-            
+            Assert.IsEmpty(nullLinkResults);           
         }
+
+        [Test]
+        public void Scrape_AllResultsHaveTitle_WithValidSearchTerm()
+        {
+            //Arrange
+            string searchTerm = "goose";
+
+            //Act
+            var results = scraper.Scrape(searchTerm);
+            var nullTitleResults = results.Where(x => string.IsNullOrEmpty(x.Title)).ToList();
+
+            //Assert
+            Assert.IsEmpty(nullTitleResults);
+        }
+
     }
 }
