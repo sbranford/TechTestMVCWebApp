@@ -11,10 +11,6 @@ namespace TechTestMVCWebApp.Scraper
     {
         protected List<SearchResult> results;       
         public abstract string SiteName { get; }
-        public List<SearchResult> More()
-        {
-            throw new NotImplementedException();
-        }
 
         public List<SearchResult> Scrape(string searchTerm)
         {

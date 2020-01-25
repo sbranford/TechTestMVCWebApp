@@ -10,6 +10,5 @@ namespace TechTestMVCWebApp.Scraper
     {
         public List<SearchResult> Scrape(string searchTerm);
         public string SiteName { get; }
-        public List<SearchResult> More();
     }
 }

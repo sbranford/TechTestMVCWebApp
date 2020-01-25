@@ -35,25 +35,26 @@ namespace TechTestMVCWebApp.Controllers
                 var searchResultsComparisonModel = BuildSearchResultComparison(search);
                 return View(searchResultsComparisonModel);
             }
-            catch (ScraperPageFormatException)
+            catch (ScraperPageFormatException ex)
             {
-                return View("Error");
+                return View("Error", new ErrorViewModel
+                {
+                    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                    Message = ex.Message
+                });
             }
             catch (Exception)
             {
-                return View("Error");
+                return RedirectToAction("Error");
             }
         }
 
         private SearchResultComparisonModel BuildSearchResultComparison(string search)
         {
-            var scraperAResults = scraperA.Scrape(search);
-            var scraperBResults = scraperB.Scrape(search);
-
             var searchResultsComparisonModel = new SearchResultComparisonModel()
             {
-                SiteAResults = new SiteSearchResults() { SiteName = scraperA.SiteName, SearchResults = scraperAResults },
-                SiteBResults = new SiteSearchResults() { SiteName = scraperB.SiteName, SearchResults = scraperBResults }
+                SiteAResults = new SiteSearchResults() { SiteName = scraperA.SiteName, SearchResults = scraperA.Scrape(search) },
+                SiteBResults = new SiteSearchResults() { SiteName = scraperB.SiteName, SearchResults = scraperB.Scrape(search) }
             };
             return searchResultsComparisonModel;
         }

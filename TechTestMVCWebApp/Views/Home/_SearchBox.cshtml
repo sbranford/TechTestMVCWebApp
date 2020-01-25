@@ -1,9 +1,12 @@
 ﻿
-@using (Html.BeginForm("Search","Home",FormMethod.Get))
+@{var prePopulatingValue = ViewBag.SearchTerm; }
+@using (Html.BeginForm("Search", "Home", FormMethod.Get))
 {
     @Html.AntiForgeryToken()
     <div class="form-group">
-        <input id="search" type="text" name="search" placeholder="Search Here">
-    </div>
-    <input type="submit" value="Search" class="btn btn-primary" />
+        <input id="search" type="text" name="search" placeholder="Search Here" value="@prePopulatingValue">
+
+</div>
+
+<input type="submit" value="Search" class="btn btn-primary" />
 }
