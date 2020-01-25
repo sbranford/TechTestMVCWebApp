@@ -10,7 +10,6 @@ namespace TechTestMVCWebApp.Scraper
     public abstract class AbstractScraper : IScraper
     {
         protected List<SearchResult> results;
-        protected string siteUrl;
         public List<SearchResult> More()
         {
             throw new NotImplementedException();
@@ -28,11 +27,6 @@ namespace TechTestMVCWebApp.Scraper
             var doc = web.Load(queryUrl);
             results = GetResults(doc);
             return results;
-        }
-        private string BuildQueryUrl(string searchTerm)
-        {
-            string query = siteUrl + "?q=" + searchTerm;
-            return query;
         }
 
         private List<SearchResult> GetResults(HtmlDocument doc)
@@ -53,6 +47,7 @@ namespace TechTestMVCWebApp.Scraper
             return results;
         }
 
+        protected abstract string BuildQueryUrl(string searchTerm);
         protected abstract IEnumerable<HtmlNode> GetResultNodes(HtmlDocument doc);
         protected abstract string GetResultNodeTitle(HtmlNode resultNode);
         protected abstract string GetResultNodeLink(HtmlNode resultNode);

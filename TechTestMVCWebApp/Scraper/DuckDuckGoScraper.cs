@@ -18,9 +18,11 @@ namespace TechTestMVCWebApp.Scraper
         private static readonly string resultSnippetClassName = "result__snippet";
         private static readonly string resultUrlParamterName = "amp;uddg";
 
-        public DuckDuckGoScraper()
+        protected override string BuildQueryUrl(string searchTerm)
         {
-            siteUrl = "https://duckduckgo.com/html/";
+            var siteUrl = "https://duckduckgo.com/html/";
+            string query = siteUrl + "?q=" + searchTerm;
+            return query;
         }
 
         protected override IEnumerable<HtmlNode> GetResultNodes(HtmlDocument doc)
