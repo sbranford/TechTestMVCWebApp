@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using MVCWebAppTests.Scraper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,7 +45,7 @@ namespace TechTestMVCWebApp.Scraper
 
         protected override string GetResultNodeSnippet(HtmlNode node)
         {
-            return node.Descendants("a")?.Where(y => y.Attributes["class"]?.Value == resultSnippetClassName)?.FirstOrDefault()?.InnerText;
+            return HttpUtility.HtmlDecode( node.Descendants("a")?.Where(y => y.Attributes["class"]?.Value == resultSnippetClassName)?.FirstOrDefault()?.InnerText );
         }
 
         protected override string GetResultNodeLink(HtmlNode node)
@@ -60,7 +59,7 @@ namespace TechTestMVCWebApp.Scraper
 
         protected override string GetResultNodeTitle(HtmlNode node)
         {
-            return node.Descendants("h2")?.FirstOrDefault()?.Descendants("a")?.FirstOrDefault()?.InnerText;
+            return HttpUtility.HtmlDecode(node.Descendants("h2")?.FirstOrDefault()?.Descendants("a")?.FirstOrDefault()?.InnerText);
         }
     }
 }

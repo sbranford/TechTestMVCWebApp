@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using MVCWebAppTests.Scraper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +24,7 @@ namespace TechTestMVCWebApp.Scraper
             var rootNode = doc.DocumentNode;
             var bodyNode = rootNode.Descendants("body").FirstOrDefault();
             var resultGroupNode = bodyNode?.Descendants("ol")
-                .Where(x => x.Attributes["class"]?.Value == (resultGroupNodeClassName)).FirstOrDefault();
+                .Where(x => x.Attributes["class"]?.Value == resultGroupNodeClassName).FirstOrDefault();
 
             if (resultGroupNode == null)
             {
@@ -41,7 +40,7 @@ namespace TechTestMVCWebApp.Scraper
             var snippet = node.Descendants("div")
                 ?.Where(y => y.Attributes["class"]?.Value == resultSnippetClassName)?.FirstOrDefault()
                 ?.Descendants("p")?.FirstOrDefault()?.InnerText;
-            return snippet;
+            return HttpUtility.HtmlDecode(snippet);
         }
 
         protected override string GetResultNodeLink(HtmlNode node)
@@ -53,7 +52,7 @@ namespace TechTestMVCWebApp.Scraper
 
         protected override string GetResultNodeTitle(HtmlNode node)
         {
-            return node.Descendants("h3")?.FirstOrDefault()?.Descendants("a")?.FirstOrDefault()?.InnerText;
+            return HttpUtility.HtmlDecode(node.Descendants("h3")?.FirstOrDefault()?.Descendants("a")?.FirstOrDefault()?.InnerText);
         }
     }
 }

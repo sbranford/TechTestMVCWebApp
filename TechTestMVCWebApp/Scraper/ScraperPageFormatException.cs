@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace MVCWebAppTests.Scraper
+namespace TechTestMVCWebApp.Scraper
 {
     public class ScraperPageFormatException : Exception
     {
